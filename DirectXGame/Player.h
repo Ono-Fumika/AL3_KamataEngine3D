@@ -1,6 +1,9 @@
 #pragma once
 #include "WorldTransform.h"
 #include "Model.h"
+#include "input.h"
+
+
 
 /// <summary>
 /// 自キャラ
@@ -31,6 +34,9 @@ private:
 	Model* model_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
-
-
+	// キーボード入力
+	Input* input_ = nullptr;
+	
+	// ImGuiで値を入力する変数
+	float player[3] = {0, 0, 0};
 };
