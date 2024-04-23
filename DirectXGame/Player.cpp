@@ -12,7 +12,7 @@ Matrix4x4 MakeScaleMatrix(const Vector3& scale) {
 	result.m[3][3] = 1;
 
 	return result;
-};
+}
 
 // X軸回転行列
 Matrix4x4 MakeRotateXMatrix(float radian) {
@@ -26,7 +26,7 @@ Matrix4x4 MakeRotateXMatrix(float radian) {
 	result.m[3][3] = 1;
 
 	return result;
-};
+}
 // Y軸回転行列
 Matrix4x4 MakeRotateYMatrix(float radian) {
 	Matrix4x4 result = {};
@@ -85,7 +85,7 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 	return result;
 };
 
-Matrix4x4 MatrixAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
+Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 	Matrix4x4 result = {};
 
 	Matrix4x4 rotateXMatrix = MakeRotateXMatrix(rotate.x);
@@ -144,6 +144,9 @@ void Player::Update() {
 	// キャラクターの移動速さ
 	const float kCharacterSpeed = 0.2f;
 
+	// キャラクター旋回処理
+	Rotate();
+
 	// 押した方向で移動ベクトルを変更（左右）
 	if (input_->PushKey(DIK_LEFT)) {
 		move.x -= kCharacterSpeed;
@@ -171,7 +174,7 @@ void Player::Update() {
 	// 座標移動（ベクトルの加算）
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
 	// 行列更新
-	worldTransform_.matWorld_ = MatrixAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
+	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	// 行列を定数バッファに転送
 	worldTransform_.TransferMatrix();
 
@@ -179,8 +182,44 @@ void Player::Update() {
 	ImGui::Begin("player");
 	ImGui::Text("player %f.%f.%f", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
 	ImGui::End();
+
+	// キャラクター攻撃処理
+	Attack();
+
+	// 弾更新
+	if (bullet_) {
+		bullet_->Update();
+	}
+}
+
+void Player::Attack() { 
+	if (input_->PushKey(DIK_SPACE)) {
+		// 弾の生成し、初期化
+		PlayerBullet* newBullet = new PlayerBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_);
+
+		// 弾を登録する
+		bullet_ = newBullet;
+	}
+}
+
+void Player::Rotate() {
+	// 回転速さ[ラジアン/frame]
+	const float kRotSpeed = 0.02f;
+
+	// 押した方向で移動ベクトルを変更
+	if (input_->PushKey(DIK_A)) {
+		worldTransform_.rotation_.y -= kRotSpeed;
+	} else if (input_->PushKey(DIK_D)) {
+		worldTransform_.rotation_.y += kRotSpeed;
+	}
 }
 
 void Player::Draw(ViewProjection& viewProjection) { 
 	model_->Draw(worldTransform_, viewProjection, textureHandle_); 
+
+	// 弾描画
+	if (bullet_) {
+		bullet_->Draw(viewProjection);
+	}
 }

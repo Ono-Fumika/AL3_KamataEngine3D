@@ -34,18 +34,27 @@ public:
 	/// 初期化
 	/// </summary>
 	void Initialize();
+
 	/// <summary>
 	/// 定数バッファ生成
 	/// </summary>
 	void CreateConstBuffer();
+
 	/// <summary>
 	/// マッピングする
 	/// </summary>
 	void Map();
+
 	/// <summary>
 	/// 行列を転送する
 	/// </summary>
 	void TransferMatrix();
+
+	/// <summary>
+	/// 行列を計算・転送する
+	/// </summary>
+	void UpdateMatrix();
+
 	/// <summary>
 	/// 定数バッファの取得
 	/// </summary>
