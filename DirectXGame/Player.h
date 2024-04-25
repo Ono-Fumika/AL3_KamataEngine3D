@@ -22,6 +22,8 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2);
+// ベクトル変換
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
 
 /// <summary>
 /// 自キャラ
@@ -69,11 +71,8 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// キーボード入力
 	Input* input_ = nullptr;
-	
 	// ImGuiで値を入力する変数
 	float player[3] = {0, 0, 0};
-
 	// 弾
-	/*PlayerBullet* bullet_ = nullptr;*/
 	std::list<PlayerBullet*> bullets_;
 };

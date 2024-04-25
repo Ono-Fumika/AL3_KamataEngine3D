@@ -53,7 +53,6 @@ Matrix4x4 MakeRotateZMatrix(float radian) {
 
 	return result;
 };
-
 // 行列の積
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result = {};
@@ -68,7 +67,6 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	return result;
 };
-
 // 平行移動行列
 Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 	Matrix4x4 result = {};
@@ -83,7 +81,7 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate) {
 
 	return result;
 };
-
+// アフィン変換
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate) {
 	Matrix4x4 result = {};
 
@@ -111,7 +109,6 @@ Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Ve
 
 	return result;
 };
-
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2) {
 	Vector3 result = {};
@@ -122,6 +119,17 @@ Vector3 Add(const Vector3& v1, const Vector3& v2) {
 
 	return result;
 };
+// ベクトル変換
+Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m) {
+	Vector3 result{
+	    v.x * m.m[0][0] + v.y * m.m[1][0] + v.z * m.m[2][0],
+	    v.x * m.m[0][1] + v.y * m.m[1][1] + v.z * m.m[2][1],
+	    v.x * m.m[0][2] + v.y * m.m[1][2] + v.z * m.m[2][2],
+	};
+
+	return result;
+}
+
 
 Player::~Player(){
 	for (PlayerBullet* bullet : bullets_) {
@@ -143,6 +151,14 @@ void Player::Intialize(Model* model, uint32_t textureHandle) {
 }
 
 void Player::Update() {
+	// デスフラグの立った弾を削除
+	bullets_.remove_if([](PlayerBullet* bullet) {
+		if (bullet->isDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
 	
 	// キャラクターの移動ベクトル
 	Vector3 move = {0, 0, 0};
@@ -199,15 +215,16 @@ void Player::Update() {
 
 void Player::Attack() { 
 	if (input_->TriggerKey(DIK_SPACE)) {
-		// 弾があれば解放する
-		/*if (bullet_) {
-			delete bullet_;
-			bullet_ = nullptr;
-		}*/
+		// 弾の速度
+		const float kBulletSpeed = 1.0f;
+		Vector3 velocity(0, 0, kBulletSpeed);
+
+		// 速度ベクトルを自機の向きに合わせて回転させる
+		velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
 		// 弾の生成し、初期化
 		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_);
+		newBullet->Initialize(model_, worldTransform_.translation_,velocity);
 
 		// 弾を登録する
 		bullets_.push_back(newBullet);
