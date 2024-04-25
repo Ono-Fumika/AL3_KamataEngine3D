@@ -3,6 +3,8 @@
 #include "Model.h"
 #include "input.h"
 #include "PlayerBullet.h"
+#include <list>
+#include <cassert>
 
 // 拡大縮小行列
 Matrix4x4 MakeScaleMatrix(const Vector3& scale);
@@ -26,6 +28,11 @@ Vector3 Add(const Vector3& v1, const Vector3& v2);
 /// </summary>
 class Player {
 public:
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~Player();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -67,5 +74,6 @@ private:
 	float player[3] = {0, 0, 0};
 
 	// 弾
-	PlayerBullet* bullet_ = nullptr;
+	/*PlayerBullet* bullet_ = nullptr;*/
+	std::list<PlayerBullet*> bullets_;
 };
