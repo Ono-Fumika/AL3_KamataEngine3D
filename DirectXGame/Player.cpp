@@ -200,9 +200,9 @@ void Player::Update() {
 	worldTransform_.TransferMatrix();
 
 	// キャラクターの座標を画面表示する処理
-	ImGui::Begin("player");
+	/*ImGui::Begin("player");
 	ImGui::Text("player %f.%f.%f", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
-	ImGui::End();
+	ImGui::End();*/
 
 	// キャラクター攻撃処理
 	Attack();
