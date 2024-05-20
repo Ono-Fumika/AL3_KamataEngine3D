@@ -19,7 +19,7 @@ void GameScene::Initialize() {
 	audio_ = Audio::GetInstance();
 
 	// ファイルを指定してテクスチャを読み込む
-	textureHankdle_ = TextureManager::Load("uvChecker.png");
+	textureHankdle_ = TextureManager::Load("player.PNG");
 	// 3Dモデルデータの生成
 	model_ = Model::Create();
 	// ビュープロダクション

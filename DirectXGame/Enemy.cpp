@@ -4,6 +4,12 @@
 #include <ImGuiManager.h>
 #include "Player.h"
 
+Enemy::~Enemy() {
+	for (EnemyBullet* bullet : bullets_) {
+		delete bullet;
+	}
+}
+
 void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
 	// NULLポインタチェック
 	assert(model);
@@ -17,9 +23,22 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 	worldTransform_.translation_ = position;
 	// 引数で受け取った速度をメンバ変数に代入
 	velocity_ = velocity;
+
+	// 接近フェーズ初期化
+	ApproachInitialize();
 }
 
 void Enemy::Update() {
+
+		bullets_.remove_if([](EnemyBullet* bullet) {
+		if (bullet->isDead()) {
+			delete bullet;
+			return true;
+		}
+		return false;
+	});
+	
+	ApproachUpdate();
 
 	// フェーズの処理
 	switch (phase_) {
@@ -44,6 +63,10 @@ void Enemy::Update() {
 	// ワールドトランスフォームの更新
 	worldTransform_.UpdateMatrix();
 
+	// 弾更新
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Update();
+	}
 
 	// キャラクターの座標を画面表示する処理
 	ImGui::Begin("enemy");
@@ -54,6 +77,36 @@ void Enemy::Update() {
 void Enemy::Draw(const ViewProjection& viewProjection) {
 	// モデルの描画
 	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	// 弾描画
+	for (EnemyBullet* bullet : bullets_) {
+		bullet->Draw(viewProjection);
+	}
+}
+
+void Enemy::Fire() {
+	// 弾の速度
+	const float kBulletSpeed = -1.0f;
+	Vector3 bulletVelocity(0, 0, kBulletSpeed);
+	// 速度ベクトルを自機の向きに合わせて回転させる
+	bulletVelocity = TransformNormal(bulletVelocity, worldTransform_.matWorld_);
+	// 弾を生成し、初期化
+	EnemyBullet* newBullet = new EnemyBullet();
+	newBullet->Initialize(model_, worldTransform_.translation_, bulletVelocity);
+	// 弾を登録する
+	bullets_.push_back(newBullet);
+}
+
+void Enemy::ApproachInitialize() {
+	// 発射タイマーを初期化
+	fireTimer = 60;
+}
+
+void Enemy::ApproachUpdate() { 
+	fireTimer--;
+	if (fireTimer == 0) {
+		Fire();
+		fireTimer = kFireInterval;
+	}
 }
 
 

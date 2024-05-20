@@ -63,7 +63,7 @@ private: // メンバ変数
 
 	// 敵
 	Enemy* enemy_ = nullptr;
-	Vector3 position_ = {0, 0, 30};
+	Vector3 position_ = {5.0, 0, 30};
 	Vector3 velocity_ = {0, 0, -0.1f};
 
 	// デバッグカメラ有効
