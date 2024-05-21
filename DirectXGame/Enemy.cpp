@@ -84,14 +84,27 @@ void Enemy::Draw(const ViewProjection& viewProjection) {
 }
 
 void Enemy::Fire() {
+	assert(player_);
+
 	// 弾の速度
-	const float kBulletSpeed = -1.0f;
-	Vector3 bulletVelocity(0, 0, kBulletSpeed);
-	// 速度ベクトルを自機の向きに合わせて回転させる
-	bulletVelocity = TransformNormal(bulletVelocity, worldTransform_.matWorld_);
+	const float kBulletSpeed = 0.05f;
+	//Vector3 bulletVelocity(0, 0, kBulletSpeed);
+	// 自キャラのワールド座標を取得する
+	player_->GetWorldPosition();
+	// 敵キャラのワールド座標を取得する
+	GetWorldPosition();
+	// 差分ベクトルを求める
+	Vector3 difference = Subtract(player_->GetWorldPosition(), GetWorldPosition());
+	// ベクトルの正規化
+	Normalize(difference);
+	// ベクトルの長さを、早さに合わせる
+	difference = Multiply(kBulletSpeed, difference);
+
+	//// 速度ベクトルを自機の向きに合わせて回転させる
+	//bulletVelocity = TransformNormal(bulletVelocity, worldTransform_.matWorld_);
 	// 弾を生成し、初期化
 	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(model_, worldTransform_.translation_, bulletVelocity);
+	newBullet->Initialize(model_, worldTransform_.translation_, difference);
 	// 弾を登録する
 	bullets_.push_back(newBullet);
 }
@@ -107,6 +120,16 @@ void Enemy::ApproachUpdate() {
 		Fire();
 		fireTimer = kFireInterval;
 	}
+}
+
+Vector3 Enemy::GetWorldPosition() {
+	Vector3 worldPos;
+
+	worldPos.x = worldTransform_.matWorld_.m[3][0];
+	worldPos.y = worldTransform_.matWorld_.m[3][1];
+	worldPos.z = worldTransform_.matWorld_.m[3][2];
+
+	return worldPos;
 }
 
 

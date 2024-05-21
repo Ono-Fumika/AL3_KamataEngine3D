@@ -22,8 +22,19 @@ Matrix4x4 MakeTranslateMatrix(const Vector3& translate);
 Matrix4x4 MakeAffineMatrix(const Vector3& scale, const Vector3& rotate, const Vector3& translate);
 // 加算
 Vector3 Add(const Vector3& v1, const Vector3& v2);
+// 減産
+Vector3 Subtract(const Vector3& v1, const Vector3& v2);
 // ベクトル変換
 Vector3 TransformNormal(const Vector3& v, const Matrix4x4& m);
+// 内席
+float Dot(const Vector3& v1, const Vector3& v2);
+// 長さ（ノルム）
+float Length(const Vector3& v);
+// 正規化
+Vector3 Normalize(const Vector3& v);
+// スカラー倍
+Vector3 Multiply(float scalar, const Vector3& v);
+
 
 /// <summary>
 /// 自キャラ
@@ -61,6 +72,9 @@ public:
 	/// 描画
 	/// </summary>
 	void Draw(ViewProjection&viewProjection);
+
+		// ワールド座標を取得
+	Vector3 GetWorldPosition();
 
 private:
 	// ワールド変換データ
