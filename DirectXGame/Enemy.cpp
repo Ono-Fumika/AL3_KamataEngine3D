@@ -30,7 +30,7 @@ void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& vel
 
 void Enemy::Update() {
 
-		bullets_.remove_if([](EnemyBullet* bullet) {
+	bullets_.remove_if([](EnemyBullet* bullet) {
 		if (bullet->isDead()) {
 			delete bullet;
 			return true;
@@ -121,6 +121,8 @@ void Enemy::ApproachUpdate() {
 		fireTimer = kFireInterval;
 	}
 }
+
+void Enemy::OnColision() {}
 
 Vector3 Enemy::GetWorldPosition() {
 	Vector3 worldPos;
