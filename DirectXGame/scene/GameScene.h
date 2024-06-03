@@ -11,6 +11,7 @@
 #include "Enemy.h"
 #include "DebugCamera.h"
 #include "EnemyBullet.h"
+#include "sKydome.h"
 
 /// <summary>
 /// ゲームシーン
@@ -73,6 +74,13 @@ private: // メンバ変数
 	Vector3 position_ = {5.0, 0, 30};
 	Vector3 velocity_ = {0, 0, -0.1f};
 	float enemyRadius_ = 1.0f;
+
+	// 天球のテクスチャハンドル
+	uint32_t skydomeTh_ = 0;
+	// 3Dモデル
+	Model* modelSkydome_ = nullptr;
+	// 天球
+	Skydome* skydome_ = nullptr;
 
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;
