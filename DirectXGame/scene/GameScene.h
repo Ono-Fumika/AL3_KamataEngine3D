@@ -12,6 +12,7 @@
 #include "DebugCamera.h"
 #include "EnemyBullet.h"
 #include "sKydome.h"
+#include "RailCamera.h"
 
 /// <summary>
 /// ゲームシーン
@@ -49,7 +50,8 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllColisions();
 
-private: // メンバ変数
+private:
+	// メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
 	Input* input_ = nullptr;
 	Audio* audio_ = nullptr;
@@ -81,6 +83,11 @@ private: // メンバ変数
 	Model* modelSkydome_ = nullptr;
 	// 天球
 	Skydome* skydome_ = nullptr;
+
+	// レールカメラ
+	RailCamera* railCamera_ = nullptr;
+	Vector3 railPosition_ = {0, 0, -100.0f};
+	Vector3 railRotation_ = {0, 0, 0};
 
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;

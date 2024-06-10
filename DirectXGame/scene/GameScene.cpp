@@ -11,6 +11,7 @@ GameScene::~GameScene() {
 	delete debugCamera_;
 	delete enemy_;
 	delete modelSkydome_;
+	delete railCamera_;
 }
 
 void GameScene::Initialize() {
@@ -30,7 +31,8 @@ void GameScene::Initialize() {
 	// 自キャラの生成
 	player_ = new Player;
 	// 自キャラの初期化
-	player_->Intialize(model_,textureHankdle_);
+	Vector3 playerPosition(0, 0, 10.0f);
+	player_->Intialize(model_,textureHankdle_,playerPosition);
 
 	// 敵の生成
 	enemy_ = new Enemy;
@@ -43,6 +45,10 @@ void GameScene::Initialize() {
 	modelSkydome_ = Model::CreateFromOBJ("AL3", true);
 	skydome_->Initialize(modelSkydome_, textureHankdle_);
 
+	// レールカメラ
+	railCamera_ = new RailCamera;
+	railCamera_->Initialize(railPosition_, railRotation_);
+
 	// デバッグカメラの生成
 	debugCamera_ = new DebugCamera(1280, 720);
 
@@ -53,6 +59,9 @@ void GameScene::Initialize() {
 	AxisIndicator::GetInstance()->SetVisible(true);
 	// 軸方向表示が参照するビュープロダクションを指定する（アドレスなし）
 	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+
+	// 自キャラとレールカメラの親子関係を結ぶ
+	player_->SetParent(&railCamera_->GetWorldTransform());
 }
 
 void GameScene::Update() {
@@ -69,22 +78,29 @@ void GameScene::Update() {
 	}
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
+	/*if (input_->TriggerKey(DIK_SPACE)) {
 		isDebugCameraActive_ = true;
-	}
+	}*/
 #endif
 	// カメラの処理
 	if (isDebugCameraActive_) {
 		// デバッグカメラの更新
-		debugCamera_->Update();
+		/*debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;*/
+
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
 	} else {
 		// ビュープロジェクション行列の更新と転送
 		viewProjection_.UpdateMatrix();
 	}
+
+	railCamera_->Update();
+	viewProjection_.matView = railCamera_->GetViewProjection().matView;
+	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+	// ビュープロジェクション行列の転送
+	viewProjection_.TransferMatrix();
 }
 
 void GameScene::Draw() {

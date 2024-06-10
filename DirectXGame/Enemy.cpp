@@ -3,6 +3,7 @@
 #include <cassert>
 #include <ImGuiManager.h>
 #include "Player.h"
+#include "MassFunction.h"
 
 Enemy::~Enemy() {
 	for (EnemyBullet* bullet : bullets_) {
@@ -69,9 +70,9 @@ void Enemy::Update() {
 	}
 
 	// キャラクターの座標を画面表示する処理
-	ImGui::Begin("enemy");
+	/*ImGui::Begin("enemy");
 	ImGui::Text("enemy %f.%f.%f", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
-	ImGui::End();
+	ImGui::End();*/
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) {
