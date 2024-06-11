@@ -13,6 +13,7 @@
 #include "EnemyBullet.h"
 #include "sKydome.h"
 #include "RailCamera.h"
+#include <sstream>
 
 /// <summary>
 /// ゲームシーン
@@ -50,6 +51,19 @@ public: // メンバ関数
 	/// </summary>
 	void CheckAllColisions();
 
+	// 敵弾を追加する
+	void AddEnemyBullet(EnemyBullet* enemyBullet);
+	// 弾リストを取得
+	const std::list<EnemyBullet*>& GetBullets() const { return enemyBullets_; }
+
+	// 敵発生データの読み込み
+	void LoadEnemyPopData();
+	// 敵発生コマンドの更新
+	void UpdateEnemyPopCommands();
+
+	// 敵発生関数
+	void EnemyOccurrence(Vector3 positipn);
+
 private:
 	// メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -72,10 +86,17 @@ private:
 	float playerRadius_ = 1.0f;
 
 	// 敵
-	Enemy* enemy_ = nullptr;
+	//Enemy* enemy_ = nullptr;
+	std::list<Enemy*> enemys_;
 	Vector3 position_ = {5.0, 0, 30};
 	Vector3 velocity_ = {0, 0, -0.1f};
 	float enemyRadius_ = 1.0f;
+	// 敵発生コマンド
+	std::stringstream enemyPopCommands;
+	// 待機中フラグ
+	bool isWait = false;
+	// 待機タイマー
+	int32_t waitTimer;
 
 	// 天球のテクスチャハンドル
 	uint32_t skydomeTh_ = 0;
@@ -93,4 +114,7 @@ private:
 	bool isDebugCameraActive_ = false;
 	// デバッグカメラ
 	DebugCamera* debugCamera_ = nullptr;
+
+	// 弾
+	std::list<EnemyBullet*> enemyBullets_;
 };

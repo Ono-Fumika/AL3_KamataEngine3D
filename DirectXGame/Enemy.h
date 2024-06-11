@@ -6,6 +6,8 @@
 
 // 自機クラスの味方宣言
 class Player;
+// GameSceneの前方宣言
+class GameScene;
 
 /// <summary>
 /// 自キャラ
@@ -60,11 +62,12 @@ public:
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnColision();
 
-	// 弾リストを取得
-	const std::list<EnemyBullet*>& GetBullets() const { return bullets_; }
-
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
+
+	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
+
+	bool isDead() const { return isDead_; }
 
 private:
 	// ワールド変換データ
@@ -75,6 +78,8 @@ private:
 	uint32_t textureHandle_ = 0u;
 	// 速度
 	Vector3 velocity_;
+	// 死亡フラグ
+	bool isDead_ = false;
 
 	// フェーズ
 	Phase phase_ = Phase::Approach;
@@ -83,11 +88,12 @@ private:
 	// 離脱フェーズの速度
 	Vector3 leaveSpeed_ = Vector3{0.0f, 0.0f, 0.0f};
 
-	// 弾
-	std::list<EnemyBullet*> bullets_;
 	// 発射タイマー
 	int32_t fireTimer = 0;
 
 	// 自キャラ
 	Player* player_ = nullptr;
+
+	// ゲームシーン
+	GameScene* gameScene_ = nullptr;
 };
