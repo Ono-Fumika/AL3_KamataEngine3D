@@ -4,6 +4,8 @@
 #include "PlayerBullet.h"
 #include <list>
 #include <cassert>
+#include <Sprite.h>
+#include "ViewProjection.h"
 
 /// <summary>
 /// 自キャラ
@@ -25,7 +27,7 @@ public:
 	/// <summary>
 	/// 更新
 	/// </summary>
-	void Update();
+	void Update(const ViewProjection & viewProjection);
 
 	/// <summary>
 	/// 旋回
@@ -44,6 +46,8 @@ public:
 
 	// ワールド座標を取得
 	Vector3 GetWorldPosition();
+	// 3Dレティクルのワールド座標
+	Vector3 GetWorldPosition3DReticle();
 
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnColision();
@@ -53,6 +57,11 @@ public:
 
 	// 弾リストを取得
 	const std::list<PlayerBullet*>& GetBullets() const { return bullets_; }
+
+	/// <summary>
+	/// UI描画
+	/// </summary>
+	void DrawUI();
 
 private:
 	// ワールド変換データ
@@ -67,4 +76,8 @@ private:
 	float player[3] = {0, 0, 0};
 	// 弾
 	std::list<PlayerBullet*> bullets_;
+	// 3Dレティクル用ワールドトランスフォーム
+	WorldTransform worldTransform3DReticle_;
+	// 2Dレティクル用スプライト
+	Sprite* sprite2DReticle_ = nullptr;
 };

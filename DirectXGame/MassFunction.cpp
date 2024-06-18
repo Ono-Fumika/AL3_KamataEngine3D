@@ -226,6 +226,18 @@ Matrix4x4 Add(const Matrix4x4& m1, const Matrix4x4& m2) {
 
 	return result;
 };
+// 行列の減法
+Matrix4x4 Subtract(const Matrix4x4& m1, const Matrix4x4& m2) {
+	Matrix4x4 result = {};
+
+	for (int x = 0; x < 4; x++) {
+		for (int y = 0; y < 4; y++) {
+			result.m[x][y] = m1.m[x][y] - m2.m[x][y];
+		}
+	}
+
+	return result;
+};
 // 行列の積
 Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 	Matrix4x4 result = {};
@@ -237,6 +249,44 @@ Matrix4x4 Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
 			}
 		}
 	}
+
+	return result;
+};
+
+// ビューポート変換行列
+Matrix4x4 MakeViewportMatrix(float left, float top, float width, float height, float minDepth, float maxDepth) {
+	Matrix4x4 result = {};
+
+	result.m[0][0] = width / 2;
+	result.m[1][1] = -(height / 2);
+	result.m[2][2] = maxDepth - minDepth;
+	result.m[3][0] = left + (width / 2);
+	result.m[3][1] = top + (height / 2);
+	result.m[3][2] = minDepth;
+	result.m[3][3] = 1;
+
+	return result;
+};
+
+// 座標返還
+Vector3 Transform(const Vector3& vector, const Matrix4x4& matrix) {
+	// ｗ = 1 がデカルト座標系であるので（ｘ、ｙ、z,1）のベクトルとしてmatrixとの積をとる
+	Vector3 result = {};
+
+	result.x = vector.x * matrix.m[0][0] + vector.y * matrix.m[1][0] + vector.z * matrix.m[2][0] + 1.0f * matrix.m[3][0];
+
+	result.y = vector.x * matrix.m[0][1] + vector.y * matrix.m[1][1] + vector.z * matrix.m[2][1] + 1.0f * matrix.m[3][1];
+
+	result.z = vector.x * matrix.m[0][2] + vector.y * matrix.m[1][2] + vector.z * matrix.m[2][2] + 1.0f * matrix.m[3][2];
+
+	float w = vector.x * matrix.m[0][3] + vector.y * matrix.m[1][3] + vector.z * matrix.m[2][3] + 1.0f * matrix.m[3][3];
+
+	// ベクトルに対して基本的な操作を行う行列でｗが0になることは無い
+	assert(w != 0.0f);
+	// ｗ＝1がデカルト座標系であるので、ｗ除算することで同次座標をデカルト座標に戻す
+	result.x /= w;
+	result.y /= w;
+	result.z /= w;
 
 	return result;
 };
