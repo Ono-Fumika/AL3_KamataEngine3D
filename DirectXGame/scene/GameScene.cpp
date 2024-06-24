@@ -45,8 +45,6 @@ void GameScene::Initialize() {
 	// 敵の生成
 	//enemy_ = new Enemy;
 	
-	
-
 	// 天球
 	// 3Dモデルの生成
 	skydome_ = new Skydome;
