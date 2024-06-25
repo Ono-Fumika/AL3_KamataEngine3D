@@ -29,6 +29,6 @@ private:
 	// 移動する数値
 	Vector3 velocity_ = {0.0f, 0.0f, 0.1f};
 	// 回転する数値
-	Vector3 rotate_ = {0.0f, 0.0f, 0.0f};
+	Vector3 rotate_ = {0.0f, 0.0f, 0.005f};
 
 };
