@@ -64,6 +64,9 @@ public: // メンバ関数
 	// 敵発生関数
 	void EnemyOccurrence(Vector3 positipn);
 
+	// 終了フラグのゲッター
+	bool IsFinished() const { return finished_; }
+
 private:
 	// メンバ変数
 	DirectXCommon* dxCommon_ = nullptr;
@@ -74,6 +77,9 @@ private:
 	/// ゲームシーン用
 	/// </summary>
 
+	// 終了フラグ
+	bool finished_ = false;
+	
 	// テクスチャハンドル
 	uint32_t textureHankdle_ = 0;
 	// 3Dモデルデータ

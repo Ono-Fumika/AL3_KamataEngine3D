@@ -71,6 +71,7 @@ void GameScene::Initialize() {
 }
 
 void GameScene::Update() {
+
 	UpdateEnemyPopCommands();
 	player_->GetWorldPosition();
 
