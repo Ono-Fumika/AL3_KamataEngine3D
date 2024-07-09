@@ -50,6 +50,9 @@ void Player::Intialize(Model* model, uint32_t textureHandle,Vector3 playerPositi
 	uint32_t textureReticle = TextureManager::Load("point.png");
 	// スプライト作成
 	sprite2DReticle_ = Sprite::Create(textureReticle, {620.0f,360.0f}, {1,1,1,1}, {0.5f,0.5f});
+
+	// 発射タイマーを初期化
+	fireTimer = 60;
 }
 
 void Player::Update(const ViewProjection& viewProjection) {
@@ -226,25 +229,34 @@ void Player::Attack() {
 		return;
 	}
 	if (input_->TriggerKey(DIK_SPACE) || (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
-		// 弾の速度
-		const float kBulletSpeed = 1.0f;
-		Vector3 velocity(0, 0, kBulletSpeed);
+		fireTimer--;
+		if (fireTimer <= 0) {
 
-		// 速度ベクトルを自機の向きに合わせて回転させる
-		//velocity = TransformNormal(velocity, worldTransform_.matWorld_);
+			// 弾の速度
+			const float kBulletSpeed = 1.0f;
+			Vector3 velocity(0, 0, kBulletSpeed);
 
-		// 自機から標準オブジェクトへのベクトル
-		velocity = Subtract(GetWorldPosition3DReticle(), GetWorldPosition());
-		velocity = Multiply(kBulletSpeed, Normalize(velocity));
+			// 速度ベクトルを自機の向きに合わせて回転させる
+			// velocity = TransformNormal(velocity, worldTransform_.matWorld_);
 
-		// 弾の生成し、初期化
-		PlayerBullet* newBullet = new PlayerBullet();
-		newBullet->Initialize(model_, GetWorldPosition(), velocity);
+			// 自機から標準オブジェクトへのベクトル
+			velocity = Subtract(GetWorldPosition3DReticle(), GetWorldPosition());
+			velocity = Multiply(kBulletSpeed, Normalize(velocity));
 
-		// 弾を登録する
-		bullets_.push_back(newBullet);
+			// 弾の生成し、初期化
+			PlayerBullet* newBullet = new PlayerBullet();
+			newBullet->Initialize(model_, GetWorldPosition(), velocity);
 
+			// 弾を登録する
+			bullets_.push_back(newBullet);
+
+
+			fireTimer = 30;
+		}
 		
+		
+	} else {
+		fireTimer = 0;
 	}
 	
 }

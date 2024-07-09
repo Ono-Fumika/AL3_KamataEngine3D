@@ -80,4 +80,7 @@ private:
 	WorldTransform worldTransform3DReticle_;
 	// 2Dレティクル用スプライト
 	Sprite* sprite2DReticle_ = nullptr;
+
+	// 発射タイマーを初期化
+	float fireTimer = 60;
 };

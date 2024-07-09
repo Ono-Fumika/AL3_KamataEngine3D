@@ -38,7 +38,7 @@ void Enemy::Update() {
 		// 座標を移動させる（1フレーム分の移動量を足しこむ）
 		worldTransform_.translation_ = Add(worldTransform_.translation_,approachSpeed_);
 		// 既定の位置に到達したら離脱
-		if (worldTransform_.translation_.z < 0.0f) {
+		if (worldTransform_.translation_.z < 30.0f) {
 			phase_ = Phase::Leave;
 		}
 		break;
@@ -55,9 +55,9 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 
 	// キャラクターの座標を画面表示する処理
-	/*ImGui::Begin("enemy");
-	ImGui::Text("enemy %f.%f.%f", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
-	ImGui::End();*/
+	ImGui::Begin("enemy");
+	ImGui::Text("enemy %f", worldTransform_.translation_.z);
+	ImGui::End();
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) {

@@ -86,7 +86,7 @@ private:
 	// 接近フェーズの速度
 	Vector3 approachSpeed_ = Vector3{0.0f, 0.0f, 0.0f};
 	// 離脱フェーズの速度
-	Vector3 leaveSpeed_ = Vector3{0.0f, 0.0f, 0.0f};
+	Vector3 leaveSpeed_ = Vector3{-0.1f, 0.1f, 0.0f};
 
 	// 発射タイマー
 	int32_t fireTimer = 0;

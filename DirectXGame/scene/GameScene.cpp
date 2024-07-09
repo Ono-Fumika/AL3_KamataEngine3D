@@ -107,16 +107,16 @@ void GameScene::Update() {
 	}
 
 #ifdef _DEBUG
-	/*if (input_->TriggerKey(DIK_SPACE)) {
+	if (input_->TriggerKey(DIK_SPACE)) {
 		isDebugCameraActive_ = true;
-	}*/
+	}
 #endif
 	// カメラの処理
 	if (isDebugCameraActive_) {
 		// デバッグカメラの更新
-		/*debugCamera_->Update();
+		debugCamera_->Update();
 		viewProjection_.matView = debugCamera_->GetViewProjection().matView;
-		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;*/
+		viewProjection_.matProjection = debugCamera_->GetViewProjection().matProjection;
 
 		// ビュープロジェクション行列の転送
 		viewProjection_.TransferMatrix();
