@@ -66,6 +66,8 @@ public: // メンバ関数
 
 	// 終了フラグのゲッター
 	bool IsFinished() const { return finished_; }
+	// クリアフラグのゲッター
+	bool IsClear() const { return clear_; }
 
 private:
 	// メンバ変数
@@ -79,6 +81,8 @@ private:
 
 	// 終了フラグ
 	bool finished_ = false;
+	// クリアフラグ
+	bool clear_ = false;
 	
 	// テクスチャハンドル
 	uint32_t textureHankdle_ = 0;

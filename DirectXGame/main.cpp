@@ -7,9 +7,13 @@
 #include "TextureManager.h"
 #include "WinApp.h"
 #include "TitleScene.h"
+#include "GameClear.h"
+#include "GameOver.h"
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
+GameClear* clearScene = nullptr;
+GameOver* overScene = nullptr;
 
 // シーン（仮）
 enum class Scene { 
@@ -17,11 +21,14 @@ enum class Scene {
 
 	kTitle,
 	kGame,
+	kClear,
+	kOver,
 };
 
 // 現在のシーン（仮）
 Scene scene = Scene::kunknown;
 
+// シーンの切り替え
 void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
@@ -37,15 +44,51 @@ void ChangeScene() {
 		}
 		break;
 	case Scene::kGame:
+		// ゲームオーバーなら
 		if (gameScene->IsFinished()) {
+			// シーン変更
+			scene = Scene::kOver;
+			// 旧シーンの解放
+			delete gameScene;
+			gameScene = nullptr;
+			// 新シーンの生成と初期化
+			overScene = new GameOver;
+			overScene->Initialize();
+		}
+		// ゲームクリアなら
+		if (gameScene->IsClear()) {
+			// シーン変更
+			scene = Scene::kClear;
+			// 旧シーンの解放
+			delete gameScene;
+			gameScene = nullptr;
+			// 新シーンの生成と初期化
+			clearScene = new GameClear;
+			clearScene->Initialize();
+		}
+		break;
+	case Scene::kClear:
+		if (clearScene->IsFinished()) {
 			// シーン変更
 			scene = Scene::kTitle;
 			// 旧シーンの解放
-			delete titleScene;
-			titleScene = nullptr;
+			delete clearScene;
+			clearScene = nullptr;
 			// 新シーンの生成と初期化
-			gameScene = new GameScene;
-			gameScene->Initialize();
+			titleScene = new TitleScene;
+			titleScene->Initialize();
+		}
+		break;
+	case Scene::kOver:
+		if (overScene->IsFinished()) {
+			// シーン変更
+			scene = Scene::kTitle;
+			// 旧シーンの解放
+			delete overScene;
+			overScene = nullptr;
+			// 新シーンの生成と初期化
+			titleScene = new TitleScene;
+			titleScene->Initialize();
 		}
 		break;
 	}
@@ -59,6 +102,12 @@ void UpdateScene() {
 	case Scene::kGame:
 		gameScene->Update();
 		break;
+	case Scene::kClear:
+		clearScene->Update();
+		break;
+	case Scene::kOver:
+		overScene->Update();
+		break;
 	}
 }
 
@@ -69,6 +118,12 @@ void DrawScene() {
 		break;
 	case Scene::kGame:
 		gameScene->Draw();
+		break;
+	case Scene::kClear:
+		clearScene->Draw();
+		break;
+	case Scene::kOver:
+		overScene->Draw();
 		break;
 	}
 }
@@ -177,6 +232,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 各種解放
 	delete titleScene;
 	delete gameScene;
+	delete clearScene;
+	delete overScene;
+
 	// 3Dモデル解放
 	Model::StaticFinalize();
 	audio->Finalize();
