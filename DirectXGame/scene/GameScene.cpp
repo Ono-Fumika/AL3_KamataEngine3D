@@ -13,6 +13,9 @@ GameScene::~GameScene() {
 	for (Enemy* enemy_ : enemys_) {
 		delete enemy_;
 	}
+	for (Obstacle* obstacle : obstacle_) {
+		delete obstacle;
+	}
 	delete modelSkydome_;
 	delete railCamera_;
 
@@ -27,6 +30,7 @@ void GameScene::Initialize() {
 	input_ = Input::GetInstance();
 	audio_ = Audio::GetInstance();
 	LoadEnemyPopData();
+	LoadObstaclePopData();
 
 	// ファイルを指定してテクスチャを読み込む
 	textureHankdle_ = TextureManager::Load("player.PNG");
@@ -73,12 +77,17 @@ void GameScene::Initialize() {
 void GameScene::Update() {
 
 	UpdateEnemyPopCommands();
+	UpdateObstaclePopCommands();
 	player_->GetWorldPosition();
 
 	// 自キャラの更新
 	player_->Update(viewProjection_);
 
 	CheckAllColisions();
+
+	if (player_->isDead()) {
+		finished_ = true;
+	}
 
 	// 敵の更新
 	enemys_.remove_if([](Enemy* enemy) {
@@ -104,6 +113,20 @@ void GameScene::Update() {
 	});
 	for (EnemyBullet* bullet : enemyBullets_) {
 		bullet->Update();
+	}
+
+	// 障害物の更新
+	obstacle_.remove_if([](Obstacle* obstacle) {
+		if (obstacle->isDead()) {
+			delete obstacle;
+			return true;
+		}
+		return false;
+	});
+	for (Obstacle* obstacle : obstacle_) {
+		if (obstacle != nullptr) {
+			obstacle->Update();
+		}
 	}
 
 #ifdef _DEBUG
@@ -172,6 +195,13 @@ void GameScene::Draw() {
 			for (EnemyBullet* bullet : enemyBullets_) {
 				bullet->Draw(viewProjection_);
 			}
+		}
+	}
+
+	// 障害物の描画
+	for (Obstacle* obstacle : obstacle_) {
+		if (obstacle != nullptr) {
+			obstacle->Draw(viewProjection_);
 		}
 	}
 
@@ -244,7 +274,7 @@ void GameScene::CheckAllColisions() {
 	#pragma endregion;
 
 	#pragma region
-	// 自弾と敵キャラの当たり判定
+	// 自弾と敵弾の当たり判定
 	for (EnemyBullet* bullet_ : enemyBullets) {
 		for (PlayerBullet* bullet : playerBullets) {
 			// 敵弾の座標
@@ -266,6 +296,7 @@ void GameScene::AddEnemyBullet(EnemyBullet* enemyBullet) {
 	enemyBullets_.push_back(enemyBullet);
 }
 
+// 敵
 void GameScene::LoadEnemyPopData() {
 	// ファイルを開く
 	std::ifstream file;
@@ -354,6 +385,95 @@ void GameScene::EnemyOccurrence(Vector3 positipn) {
 		// 敵キャラに自キャラのアドレスを渡す
 		newEnemy->SetPlayer(player_);
 }
+
+// 障害物
+void GameScene::LoadObstaclePopData() {
+	// ファイルを開く
+	std::ifstream obstacleFile;
+	obstacleFile.open("./Resources/ObstaclePop.csv");
+	assert(obstacleFile.is_open());
+
+	// ファイルの文字列ストリームにコピー
+	obstaclePopCommands << obstacleFile.rdbuf();
+
+	// ファイルを閉じる
+	obstacleFile.close();
+}
+
+void GameScene::UpdateObstaclePopCommands() { 
+	// 待機
+	if (obstacleIsWait) {
+		obstacleWaitTimer--;
+		if (obstacleWaitTimer <= 0) {
+			// 待機完了
+			obstacleIsWait = false;
+		}
+		return;
+	}
+
+	// 1行分の文字列を入れる変数
+	std::string line;
+
+	// コマンド実行ループ
+	while (getline(obstaclePopCommands, line)) {
+
+		// 1行分の文字列をストリームに変換して解析しやすくなる
+		std::istringstream line_stream(line);
+		std::string word;
+
+		// ,区切りで行の先頭文字列を取得
+		getline(line_stream, word, ',');
+
+		//"//"から始まる行はコメント
+		if (word.find("//") == 0) {
+			// コメント行を飛ばす
+			continue;
+		}
+
+		// POPコマンド
+		if (word.find("POP") == 0) {
+			// X座標
+			getline(line_stream, word, ',');
+			float x = (float)std::atof(word.c_str());
+
+			// Y座標
+			getline(line_stream, word, ',');
+			float y = (float)std::atof(word.c_str());
+
+			// Z座標
+			getline(line_stream, word, ',');
+			float z = (float)std::atof(word.c_str());
+
+			// 敵を発生させる
+			ObstacleOccurrence(Vector3(x, y, z));
+		}
+
+		// WAITコマンド
+		else if (word.find("WAIT") == 0) {
+			getline(line_stream, word, ',');
+
+			// 待ち時間
+			int32_t waitTime = atoi(word.c_str());
+
+			// 待機開始
+			obstacleIsWait = true;
+			obstacleWaitTimer = waitTime;
+
+			// コマンドループを抜ける
+			break;
+		}
+	}
+
+}
+
+void GameScene::ObstacleOccurrence(Vector3 positipn) {
+	Obstacle* newObstacle = new Obstacle();
+	newObstacle->Initialize(model_, positipn);
+	obstacle_.push_back(newObstacle);
+	// 敵キャラにデーむシーンを渡す
+	newObstacle->SetGameScene(this);
+}
+
 
 //void GameScene::AddEnemy(Enemy* enemy) {
 //	// リストに登録する

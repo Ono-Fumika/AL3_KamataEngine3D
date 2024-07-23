@@ -10,7 +10,7 @@ class Player;
 class GameScene;
 
 /// <summary>
-/// 自キャラ
+/// エネミー
 /// </summary>
 class Enemy {
 public:

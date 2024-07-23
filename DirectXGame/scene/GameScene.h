@@ -14,6 +14,7 @@
 #include "sKydome.h"
 #include "RailCamera.h"
 #include <sstream>
+#include "Obstacle.h"
 
 /// <summary>
 /// ゲームシーン
@@ -60,9 +61,16 @@ public: // メンバ関数
 	void LoadEnemyPopData();
 	// 敵発生コマンドの更新
 	void UpdateEnemyPopCommands();
-
 	// 敵発生関数
 	void EnemyOccurrence(Vector3 positipn);
+
+	// 障害物発生データの読み込み
+	void LoadObstaclePopData();
+	// 障害物発生コマンドの更新
+	void UpdateObstaclePopCommands();
+	// 障害物発生関数
+	void ObstacleOccurrence(Vector3 positipn);
+	
 
 	// 終了フラグのゲッター
 	bool IsFinished() const { return finished_; }
@@ -107,6 +115,17 @@ private:
 	bool isWait = false;
 	// 待機タイマー
 	int32_t waitTimer;
+
+	// 障害物
+	std::list<Obstacle*> obstacle_;
+	Vector3 obstaclePosition_ = {5.0, 0, 30};
+	float obstacleRadius_ = 1.0f;
+	// 障害物発生コマンド
+	std::stringstream obstaclePopCommands;
+	// 待機中フラグ
+	bool obstacleIsWait = false;
+	// 待機タイマー
+	int32_t obstacleWaitTimer;
 
 	// 天球のテクスチャハンドル
 	uint32_t skydomeTh_ = 0;

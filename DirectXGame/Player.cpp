@@ -60,6 +60,11 @@ void Player::Update(const ViewProjection& viewProjection) {
 	// ゲームパッドの状態を得る変数
 	XINPUT_STATE joyState;
 
+	// hpが0なら死ぬ
+	if (hp_ <= 0) {
+		isDead_ = true;
+	}
+
 	// デスフラグの立った弾を削除
 	bullets_.remove_if([](PlayerBullet* bullet) {
 		if (bullet->isDead()) {
@@ -113,9 +118,11 @@ void Player::Update(const ViewProjection& viewProjection) {
 	worldTransform_.UpdateMatrix();
 
 	// キャラクターの座標を画面表示する処理
-	/*ImGui::Begin("player");
+#ifdef _DEBUG
+	ImGui::Begin("player");
 	ImGui::Text("player %f.%f.%f", worldTransform_.translation_.x, worldTransform_.translation_.y, worldTransform_.translation_.z);
-	ImGui::End();*/
+	ImGui::End();
+#endif
 
 	// キャラクター攻撃処理
 	Attack();
@@ -210,13 +217,14 @@ void Player::Update(const ViewProjection& viewProjection) {
 		worldTransform3DReticle_.TransferMatrix();
 
 		// デバッグ文字
-		ImGui::Begin("Player");
+		/*ImGui::Begin("Player");
 		ImGui::Text("(float)joyState : %f", (float)joyState.Gamepad.sThumbRX);
 		ImGui::Text("2DReticle:(%f,%f)", sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y);
 		ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y, posNear.z);
 		ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y, posFar.z);
 		ImGui::Text("3DReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x, worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
-		ImGui::End();
+		ImGui::Text("HP : %f", hp_);
+		ImGui::End();*/
 	}
 }
 
@@ -285,7 +293,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 	//model_->Draw(worldTransform3DReticle_, viewProjection);
 }
 
-void Player::OnColision() {}
+void Player::OnColision() { hp_--; }
 
 void Player::SetParent(const WorldTransform* parent){
 	// 親子関係を結ぶ

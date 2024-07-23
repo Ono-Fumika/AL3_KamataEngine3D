@@ -1,6 +1,7 @@
 #pragma once
 #include "Model.h"
 #include "WorldTransform.h"
+#include <cassert>
 
 /// <summary>
 /// 天球

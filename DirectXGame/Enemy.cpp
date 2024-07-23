@@ -55,9 +55,11 @@ void Enemy::Update() {
 	worldTransform_.UpdateMatrix();
 
 	// キャラクターの座標を画面表示する処理
+#ifdef _DEBUG
 	ImGui::Begin("enemy");
 	ImGui::Text("enemy %f", worldTransform_.translation_.z);
 	ImGui::End();
+#endif
 }
 
 void Enemy::Draw(const ViewProjection& viewProjection) {

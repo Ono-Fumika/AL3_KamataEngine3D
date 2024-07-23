@@ -9,6 +9,7 @@
 #include "TitleScene.h"
 #include "GameClear.h"
 #include "GameOver.h"
+#include <ImGuiManager.h>
 
 GameScene* gameScene = nullptr;
 TitleScene* titleScene = nullptr;
@@ -32,6 +33,7 @@ Scene scene = Scene::kunknown;
 void ChangeScene() {
 	switch (scene) {
 	case Scene::kTitle:
+		
 		if (titleScene->IsFinished()) {
 			// シーン変更
 			scene = Scene::kGame;
@@ -56,7 +58,7 @@ void ChangeScene() {
 			overScene->Initialize();
 		}
 		// ゲームクリアなら
-		if (gameScene->IsClear()) {
+		else if (gameScene->IsClear()) {
 			// シーン変更
 			scene = Scene::kClear;
 			// 旧シーンの解放

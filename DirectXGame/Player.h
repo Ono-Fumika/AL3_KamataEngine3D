@@ -52,6 +52,9 @@ public:
 	// 衝突を検出したら呼び出されるコールバック関数
 	void OnColision();
 
+	// 死亡フラグのゲッター
+	bool isDead() const { return isDead_; }
+
 	// 親となるワールドトランスフォームをセット
 	void SetParent(const WorldTransform* parent);
 
@@ -80,6 +83,11 @@ private:
 	WorldTransform worldTransform3DReticle_;
 	// 2Dレティクル用スプライト
 	Sprite* sprite2DReticle_ = nullptr;
+
+	// 死亡フラグ
+	bool isDead_ = false;
+	// ｈｐ
+	float hp_ = 5;
 
 	// 発射タイマーを初期化
 	float fireTimer = 60;
