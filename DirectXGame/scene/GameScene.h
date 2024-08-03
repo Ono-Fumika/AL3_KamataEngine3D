@@ -102,6 +102,7 @@ private:
 	// 自キャラ
 	Player* player_ = nullptr;
 	float playerRadius_ = 1.0f;
+	Model* playerModel_ = nullptr;
 
 	// 敵
 	//Enemy* enemy_ = nullptr;
@@ -118,8 +119,7 @@ private:
 
 	// 障害物
 	std::list<Obstacle*> obstacle_;
-	Vector3 obstaclePosition_ = {5.0, 0, 30};
-	float obstacleRadius_ = 1.0f;
+	Vector3 obstaclePosition_ = {0, 0, 0};
 	// 障害物発生コマンド
 	std::stringstream obstaclePopCommands;
 	// 待機中フラグ
@@ -136,8 +136,14 @@ private:
 
 	// レールカメラ
 	RailCamera* railCamera_ = nullptr;
-	Vector3 railPosition_ = {0, 0, -100.0f};
+	Vector3 railPosition_ = {0, 0, -150.0f};
 	Vector3 railRotation_ = {0, 0, 0};
+
+	// チーズ
+	// 総数
+	float score;
+	// 障害物の破壊スコア
+	float bigScore = 10;
 
 	// デバッグカメラ有効
 	bool isDebugCameraActive_ = false;

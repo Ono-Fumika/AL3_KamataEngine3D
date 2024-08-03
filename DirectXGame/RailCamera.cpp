@@ -18,7 +18,11 @@ void RailCamera::Update() {
 	worldTransform_.matWorld_ = MakeAffineMatrix(worldTransform_.scale_, worldTransform_.rotation_, worldTransform_.translation_);
 	// カメラオブジェクトのワールド行列からビュー行列を計算する
 	viewProjection_.matView = Inverse(worldTransform_.matWorld_);
-	// カメラの座標を画面表示する
+
+	if (worldTransform_.translation_.z >= 12.0f) {
+		isGoal_ = true;
+	}
+
 #ifdef _DEBUG
 	ImGui::Begin("Camera");
 	ImGui::DragFloat3("translation", &worldTransform_.translation_.x, 0.01f);

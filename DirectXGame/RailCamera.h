@@ -21,14 +21,20 @@ public:
 	const ViewProjection& GetViewProjection() { return viewProjection_; }
 	const WorldTransform& GetWorldTransform() { return worldTransform_; }
 
+	// ゴールのゲッター
+	bool isGoal() const { return isGoal_; }
+
 private:
 	// ワールド変換データ
 	WorldTransform worldTransform_;
 	// ビュープロジェクション
 	ViewProjection viewProjection_;
 	// 移動する数値
-	Vector3 velocity_ = {0.0f, 0.0f, 0.01f};
+	Vector3 velocity_ = {0.0f, 0.0f, 0.05f};
 	// 回転する数値
 	Vector3 rotate_ = {0.0f, 0.0f, 0.0f};
+
+	// ゴール
+	bool isGoal_ = false;
 
 };

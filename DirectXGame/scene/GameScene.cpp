@@ -3,11 +3,13 @@
 #include <cassert>
 #include "AxisIndicator.h"
 #include <fstream>
+#include <ImGuiManager.h>
 
 GameScene::GameScene(){};
 
 GameScene::~GameScene() {
 	delete model_; 
+	delete playerModel_;
 	delete player_;
 	delete debugCamera_;
 	for (Enemy* enemy_ : enemys_) {
@@ -42,9 +44,10 @@ void GameScene::Initialize() {
 
 	// 自キャラの生成
 	player_ = new Player;
+	playerModel_ = Model::CreateFromOBJ("Player", true);
 	// 自キャラの初期化
-	Vector3 playerPosition(0, 0, 10.0f);
-	player_->Intialize(model_,textureHankdle_,playerPosition);
+	Vector3 playerPosition(0, 0, 15.0f);
+	player_->Intialize(playerModel_, textureHankdle_, playerPosition);
 
 	// 敵の生成
 	//enemy_ = new Enemy;
@@ -130,9 +133,15 @@ void GameScene::Update() {
 	}
 
 #ifdef _DEBUG
-	if (input_->TriggerKey(DIK_SPACE)) {
+	ImGui::Begin("Cheese");
+	ImGui::Text("Score : %f", score);
+	ImGui::End();
+#endif
+
+#ifdef _DEBUG 
+	/*if (input_->TriggerKey(DIK_SPACE)) {
 		isDebugCameraActive_ = true;
-	}
+	}*/
 #endif
 	// カメラの処理
 	if (isDebugCameraActive_) {
@@ -146,13 +155,14 @@ void GameScene::Update() {
 	} else {
 		// ビュープロジェクション行列の更新と転送
 		viewProjection_.UpdateMatrix();
+		railCamera_->Update();
+		viewProjection_.matView = railCamera_->GetViewProjection().matView;
+		viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
+		// ビュープロジェクション行列の転送
+		viewProjection_.TransferMatrix();
 	}
 
-	railCamera_->Update();
-	viewProjection_.matView = railCamera_->GetViewProjection().matView;
-	viewProjection_.matProjection = railCamera_->GetViewProjection().matProjection;
-	// ビュープロジェクション行列の転送
-	viewProjection_.TransferMatrix();
+	
 }
 
 void GameScene::Draw() {
@@ -268,10 +278,35 @@ void GameScene::CheckAllColisions() {
 			    ((playerRadius_ + enemyRadius_) * (playerRadius_ + enemyRadius_))) {
 				enemy_->OnColision();
 				bullet->OnColision();
+				score++;
 			}
 		}
 	}
 	#pragma endregion;
+
+	#pragma region
+	// 自弾と障害物の当たり判定
+	for (Obstacle* obstacle : obstacle_) {
+		for (PlayerBullet* bullet : playerBullets) {
+			// 障害物のワールド座標
+			posA = obstacle-> GetWorldPosition();
+			// 敵弾の座標
+			posB = bullet->GetWorldPosition();
+
+			// 弾と弾の交差判定
+			if ((((posB.x - posA.x) * (posB.x - posA.x)) + ((posB.y - posA.y) * (posB.y - posA.y)) + ((posB.z - posA.z) * (posB.z - posA.z))) <=
+			    ((playerRadius_ + obstacle->radius_) * (playerRadius_ + obstacle->radius_))) {
+				obstacle->OnColision();
+				bullet->OnColision();
+
+				if (obstacle->isDead()) {
+					score += bigScore;
+				}
+			}
+
+		}
+	}
+#pragma endregion;
 
 	#pragma region
 	// 自弾と敵弾の当たり判定

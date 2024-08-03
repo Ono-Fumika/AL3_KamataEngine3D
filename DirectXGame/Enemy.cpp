@@ -43,6 +43,7 @@ void Enemy::Update() {
 		}
 		break;
 	case Phase::Leave:
+		isAtack_ = false;
 		// 座標を移動させる（1フレーム分の移動量を足しこむ）
 		worldTransform_.translation_ = Add(worldTransform_.translation_, leaveSpeed_);
 		break;
@@ -71,7 +72,7 @@ void Enemy::Fire() {
 	assert(player_);
 
 	// 弾の速度
-	const float kBulletSpeed = 0.05f;
+	const float kBulletSpeed = 0.03f;
 	//Vector3 bulletVelocity(0, 0, kBulletSpeed);
 	// 自キャラのワールド座標を取得する
 	player_->GetWorldPosition();
@@ -87,10 +88,12 @@ void Enemy::Fire() {
 	//// 速度ベクトルを自機の向きに合わせて回転させる
 	//bulletVelocity = TransformNormal(bulletVelocity, worldTransform_.matWorld_);
 	// 弾を生成し、初期化
-	EnemyBullet* newBullet = new EnemyBullet();
-	newBullet->Initialize(model_, worldTransform_.translation_, difference);
-	// 弾を登録する
-	gameScene_->AddEnemyBullet(newBullet);
+	if (isAtack_) {
+		EnemyBullet* newBullet = new EnemyBullet();
+		newBullet->Initialize(model_, worldTransform_.translation_, difference);
+		// 弾を登録する
+		gameScene_->AddEnemyBullet(newBullet);
+	}
 }
 
 void Enemy::ApproachInitialize() {

@@ -81,6 +81,8 @@ private:
 	// 死亡フラグ
 	bool isDead_ = false;
 
+	bool isAtack_ = true;
+
 	// フェーズ
 	Phase phase_ = Phase::Approach;
 	// 接近フェーズの速度

@@ -103,14 +103,14 @@ void Player::Update(const ViewProjection& viewProjection) {
 	}
 
 	// 移動限界座標
-	const float KMoveLimitX = 19.0f;
-	const float KMoveLimtY = 35.0f;
+	const float KMoveLimitX = 9.0f;
+	const float KMoveLimtY = 5.0f;
 
 	// 範囲を超えない処理
 	worldTransform_.translation_.x = max(worldTransform_.translation_.x, -KMoveLimitX);
 	worldTransform_.translation_.x = min(worldTransform_.translation_.x, +KMoveLimitX);
 	worldTransform_.translation_.y = max(worldTransform_.translation_.y, -KMoveLimtY);
-	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +KMoveLimitX);
+	worldTransform_.translation_.y = min(worldTransform_.translation_.y, +KMoveLimtY);
 
 	// 座標移動（ベクトルの加算）
 	worldTransform_.translation_ = Add(worldTransform_.translation_, move);
@@ -180,15 +180,15 @@ void Player::Update(const ViewProjection& viewProjection) {
 		ScreenToClient(hwnd, &mousePosition);
 
 		// マウス座標を2Dレティクルのスプライトに代入する
-		//sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));
+		sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));
 
 		// ジョイスティック状態取得
-		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-			spritePosition.x += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
-			spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
-			// スプライトの座標変換を反映
-			sprite2DReticle_->SetPosition(spritePosition);
-		}
+		//if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+		//	spritePosition.x += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
+		//	spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
+		//	// スプライトの座標変換を反映
+		//	sprite2DReticle_->SetPosition(spritePosition);
+		//}
 
 		// ビューポート行列
 		Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
@@ -217,26 +217,28 @@ void Player::Update(const ViewProjection& viewProjection) {
 		worldTransform3DReticle_.TransferMatrix();
 
 		// デバッグ文字
-		/*ImGui::Begin("Player");
+#ifdef _DEBUG
+		ImGui::Begin("Player");
 		ImGui::Text("(float)joyState : %f", (float)joyState.Gamepad.sThumbRX);
 		ImGui::Text("2DReticle:(%f,%f)", sprite2DReticle_->GetPosition().x, sprite2DReticle_->GetPosition().y);
 		ImGui::Text("Near:(%+.2f,%+.2f,%+.2f)", posNear.x, posNear.y, posNear.z);
 		ImGui::Text("Far:(%+.2f,%+.2f,%+.2f)", posFar.x, posFar.y, posFar.z);
 		ImGui::Text("3DReticle:(%+.2f,%+.2f,%+.2f)", worldTransform3DReticle_.translation_.x, worldTransform3DReticle_.translation_.y, worldTransform3DReticle_.translation_.z);
 		ImGui::Text("HP : %f", hp_);
-		ImGui::End();*/
+		ImGui::End();
+#endif
 	}
 }
 
 void Player::Attack() { 
 
-	XINPUT_STATE joyState;
+	//XINPUT_STATE joyState;
 	
 	// ゲームパッド未接続なら何もせず続ける
-	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
-		return;
-	}
-	if (input_->TriggerKey(DIK_SPACE) || (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
+	/*if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		
+	}*/
+	if (input_->TriggerKey(DIK_SPACE) /*|| (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_RIGHT_SHOULDER)*/) {
 		fireTimer--;
 		if (fireTimer <= 0) {
 
@@ -282,7 +284,7 @@ void Player::Rotate() {
 }
 
 void Player::Draw(ViewProjection& viewProjection) { 
-	model_->Draw(worldTransform_, viewProjection, textureHandle_); 
+	model_->Draw(worldTransform_, viewProjection); 
 
 	// 弾描画
 	for (PlayerBullet* bullet : bullets_) {
@@ -293,7 +295,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 	//model_->Draw(worldTransform3DReticle_, viewProjection);
 }
 
-void Player::OnColision() { hp_--; }
+void Player::OnColision() { /*hp_--;*/ }
 
 void Player::SetParent(const WorldTransform* parent){
 	// 親子関係を結ぶ
