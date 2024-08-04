@@ -13,8 +13,14 @@ void GameOver::Initialize() {
 }
 
 void GameOver::Update() {
+	XINPUT_STATE joyState;
+
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+
 	// スペースキーでシーン終了
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE) || joyState.Gamepad.wButtons) {
 		finished_ = true;
 	}
 }

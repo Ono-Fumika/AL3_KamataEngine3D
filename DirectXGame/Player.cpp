@@ -96,7 +96,7 @@ void Player::Update(const ViewProjection& viewProjection) {
 		move.y -= kCharacterSpeed;
 	}
 
-		// ゲームパッド状態取得
+	// ゲームパッド状態取得
 	if (Input::GetInstance()->GetJoystickState(0, joyState)) {
 		move.x += (float)joyState.Gamepad.sThumbLX / SHRT_MAX * kCharacterSpeed;
 		move.y += (float)joyState.Gamepad.sThumbLY / SHRT_MAX * kCharacterSpeed;
@@ -183,12 +183,12 @@ void Player::Update(const ViewProjection& viewProjection) {
 		sprite2DReticle_->SetPosition(Vector2((float)mousePosition.x, (float)mousePosition.y));
 
 		// ジョイスティック状態取得
-		//if (Input::GetInstance()->GetJoystickState(0, joyState)) {
-		//	spritePosition.x += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
-		//	spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
-		//	// スプライトの座標変換を反映
-		//	sprite2DReticle_->SetPosition(spritePosition);
-		//}
+		if (Input::GetInstance()->GetJoystickState(0, joyState)) {
+			spritePosition.x += (float)joyState.Gamepad.sThumbRX / SHRT_MAX * 5.0f;
+			spritePosition.y -= (float)joyState.Gamepad.sThumbRY / SHRT_MAX * 5.0f;
+			// スプライトの座標変換を反映
+			sprite2DReticle_->SetPosition(spritePosition);
+		}
 
 		// ビューポート行列
 		Matrix4x4 matViewport = MakeViewportMatrix(0, 0, WinApp::kWindowWidth, WinApp::kWindowHeight, 0, 1);
@@ -232,13 +232,13 @@ void Player::Update(const ViewProjection& viewProjection) {
 
 void Player::Attack() { 
 
-	//XINPUT_STATE joyState;
+	XINPUT_STATE joyState;
 	
 	// ゲームパッド未接続なら何もせず続ける
-	/*if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
-		
-	}*/
-	if (input_->TriggerKey(DIK_SPACE) /*|| (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_RIGHT_SHOULDER)*/) {
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+	if (input_->TriggerKey(DIK_SPACE) || (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 		fireTimer--;
 		if (fireTimer <= 0) {
 

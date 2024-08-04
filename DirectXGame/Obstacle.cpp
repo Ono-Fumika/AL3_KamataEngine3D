@@ -33,7 +33,7 @@ void Obstacle::Update() {
 
 void Obstacle::Draw(const ViewProjection& viewProjection) {
 	// モデルの描画
-	model_->Draw(worldTransform_, viewProjection, textureHandle_);
+	model_->Draw(worldTransform_, viewProjection);
 }
 
 Vector3 Obstacle::GetWorldPosition() {

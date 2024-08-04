@@ -15,8 +15,14 @@ void TitleScene::Initialize() {
 
 void TitleScene::Update() {
 
+	XINPUT_STATE joyState;
+
+	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
+		return;
+	}
+
 	// スペースキーでタイトルシーン終了
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE) || joyState.Gamepad.wButtons) {
 		finished_ = true;
 	}
 };

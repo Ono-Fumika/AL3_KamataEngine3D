@@ -110,6 +110,7 @@ private:
 	Vector3 position_ = {5.0, 0, 30};
 	Vector3 velocity_ = {0, 0, -0.1f};
 	float enemyRadius_ = 1.0f;
+	Model* enemyModel_ = nullptr;
 	// 敵発生コマンド
 	std::stringstream enemyPopCommands;
 	// 待機中フラグ
@@ -120,6 +121,7 @@ private:
 	// 障害物
 	std::list<Obstacle*> obstacle_;
 	Vector3 obstaclePosition_ = {0, 0, 0};
+	Model* obstacleModel_ = nullptr;
 	// 障害物発生コマンド
 	std::stringstream obstaclePopCommands;
 	// 待機中フラグ

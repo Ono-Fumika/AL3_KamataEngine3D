@@ -15,9 +15,12 @@ GameScene::~GameScene() {
 	for (Enemy* enemy_ : enemys_) {
 		delete enemy_;
 	}
+	delete enemyModel_;
 	for (Obstacle* obstacle : obstacle_) {
 		delete obstacle;
 	}
+	delete obstacleModel_;
+
 	delete modelSkydome_;
 	delete railCamera_;
 
@@ -51,7 +54,10 @@ void GameScene::Initialize() {
 
 	// 敵の生成
 	//enemy_ = new Enemy;
+	enemyModel_ = Model::CreateFromOBJ("Enemy", true);
 	
+	obstacleModel_ = Model::CreateFromOBJ("Habe", true);
+
 	// 天球
 	// 3Dモデルの生成
 	skydome_ = new Skydome;
@@ -413,7 +419,7 @@ void GameScene::UpdateEnemyPopCommands() {
 
 void GameScene::EnemyOccurrence(Vector3 positipn) {
 	Enemy* newEnemy = new Enemy();
-	newEnemy->Initialize(model_, positipn, velocity_);
+	newEnemy->Initialize(enemyModel_, positipn, velocity_);
 	enemys_.push_back(newEnemy);
 	// 敵キャラにデーむシーンを渡す
 		newEnemy->SetGameScene(this);
@@ -503,7 +509,7 @@ void GameScene::UpdateObstaclePopCommands() {
 
 void GameScene::ObstacleOccurrence(Vector3 positipn) {
 	Obstacle* newObstacle = new Obstacle();
-	newObstacle->Initialize(model_, positipn);
+	newObstacle->Initialize(obstacleModel_, positipn);
 	obstacle_.push_back(newObstacle);
 	// 敵キャラにデーむシーンを渡す
 	newObstacle->SetGameScene(this);
