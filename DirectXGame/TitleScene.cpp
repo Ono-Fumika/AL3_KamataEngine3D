@@ -1,6 +1,7 @@
 #include "TitleScene.h"
 #include "TextureManager.h"
 
+
 TitleScene::~TitleScene() { 
 	delete sprite_;
 }
@@ -17,12 +18,13 @@ void TitleScene::Update() {
 
 	XINPUT_STATE joyState;
 
+
 	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
 		return;
 	}
 
 	// スペースキーでタイトルシーン終了
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE) || joyState.Gamepad.wButtons) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE) || (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_X)) {
 		finished_ = true;
 	}
 };
@@ -37,4 +39,4 @@ void TitleScene::Draw() {
 	sprite_->Draw();
 	// スプライト描画後処理
 	Sprite::PostDraw();
-	};
+}

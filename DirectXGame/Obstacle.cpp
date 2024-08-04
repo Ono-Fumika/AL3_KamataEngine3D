@@ -51,10 +51,12 @@ void Obstacle::OnColision() {
 	hp--;
 	// 耐久値がまだあるならサイズを大きくする
 	if (hp > 0) {
-		worldTransform_.scale_ = Add(worldTransform_.scale_ ,Vector3{5, 5, 0});
-		radius_ += 8.0f;
+		worldTransform_.scale_ = Add(worldTransform_.scale_ ,Vector3{2, 2, 0});
+		radius_ += 3.0f;
 	} else {
 		// 耐久値が0なら壊れる
 		isDead_ = true;
 	}
 }
+
+void Obstacle::isDai(bool isDead) { isDead_ = isDead; }

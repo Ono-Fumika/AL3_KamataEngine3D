@@ -39,7 +39,7 @@ void Enemy::Update() {
 		// 座標を移動させる（1フレーム分の移動量を足しこむ）
 		worldTransform_.translation_ = Add(worldTransform_.translation_,approachSpeed_);
 		// 既定の位置に到達したら離脱
-		if (worldTransform_.translation_.z < -300.0f) {
+		if (worldTransform_.translation_.z < player_->GetWorldPosition().z + 30) {
 			phase_ = Phase::Leave;
 		}
 		break;

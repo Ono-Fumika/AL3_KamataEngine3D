@@ -39,6 +39,8 @@ public:
 	// 死亡フラグのゲッター
 	bool isDead() const { return isDead_; }
 
+	void isDai(bool isDead);
+
 	void SetGameScene(GameScene* gameScene) { gameScene_ = gameScene; }
 
 	// 半径

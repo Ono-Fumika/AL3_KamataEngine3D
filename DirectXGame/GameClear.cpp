@@ -3,6 +3,7 @@
 
 GameClear::~GameClear() { delete sprite_; }
 
+
 void GameClear::Initialize() {
 	dxCommon_ = DirectXCommon::GetInstance();
 	// ファイル名を指定してテクスチャを読み込む
@@ -14,12 +15,13 @@ void GameClear::Initialize() {
 void GameClear::Update() {
 	XINPUT_STATE joyState;
 
+
 	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
 		return;
 	}
 
 	// スペースキーでシーン終了
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE) || joyState.Gamepad.wButtons) {
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE) || (joyState.Gamepad.wButtons & XINPUT_GAMEPAD_A)) {
 		finished_ = true;
 	}
 }
@@ -35,3 +37,4 @@ void GameClear::Draw() {
 	// スプライト描画後処理
 	Sprite::PostDraw();
 }
+

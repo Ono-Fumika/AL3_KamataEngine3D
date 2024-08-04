@@ -239,6 +239,7 @@ void Player::Attack() {
 	if (!Input::GetInstance()->GetJoystickState(0, joyState)) {
 		return;
 	}
+
 	if (input_->TriggerKey(DIK_SPACE) || (joyState.Gamepad.wButtons && XINPUT_GAMEPAD_RIGHT_SHOULDER)) {
 		fireTimer--;
 		if (fireTimer <= 0) {
@@ -296,7 +297,7 @@ void Player::Draw(ViewProjection& viewProjection) {
 	//model_->Draw(worldTransform3DReticle_, viewProjection);
 }
 
-void Player::OnColision() { /*hp_--;*/ }
+void Player::OnColision() { hp_--; }
 
 void Player::SetParent(const WorldTransform* parent){
 	// 親子関係を結ぶ

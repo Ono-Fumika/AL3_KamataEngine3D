@@ -54,6 +54,11 @@ public:
 
 	// 死亡フラグのゲッター
 	bool isDead() const { return isDead_; }
+	// クリアフラグのゲッター
+	bool isCliar() const { return isClear_; }
+
+	// HPのゲッター
+	float isLife() const { return hp_; }
 
 	// 親となるワールドトランスフォームをセット
 	void SetParent(const WorldTransform* parent);
@@ -87,6 +92,8 @@ private:
 
 	// 死亡フラグ
 	bool isDead_ = false;
+	// クリアフラグ
+	bool isClear_ = false;
 	// ｈｐ
 	float hp_ = 5;
 

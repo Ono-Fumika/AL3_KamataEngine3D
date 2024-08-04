@@ -19,7 +19,7 @@ void RailCamera::Update() {
 	// カメラオブジェクトのワールド行列からビュー行列を計算する
 	viewProjection_.matView = Inverse(worldTransform_.matWorld_);
 
-	if (worldTransform_.translation_.z >= 12.0f) {
+	if (worldTransform_.translation_.z >= -10.0f) {
 		isGoal_ = true;
 	}
 

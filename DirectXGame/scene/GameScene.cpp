@@ -27,6 +27,14 @@ GameScene::~GameScene() {
 	for (EnemyBullet* bullet : enemyBullets_) {
 		delete bullet;
 	}
+
+	// UI
+	delete cheeseSprite_;
+	delete lifeSprite_1;
+	delete lifeSprite_2;
+	delete lifeSprite_3;
+	delete lifeSprite_4;
+	delete lifeSprite_5;
 }
 
 void GameScene::Initialize() {
@@ -72,15 +80,30 @@ void GameScene::Initialize() {
 	debugCamera_ = new DebugCamera(1280, 720);
 
 	// 軸方向表示の表示を有効にする
-	AxisIndicator::GetInstance()->SetVisible(true);
-	// 軸方向表示が参照するビュープロダクションを指定する（アドレスなし）
-	AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
+	//AxisIndicator::GetInstance()->SetVisible(true);
+	//// 軸方向表示が参照するビュープロダクションを指定する（アドレスなし）
+	//AxisIndicator::GetInstance()->SetTargetViewProjection(&viewProjection_);
 
 	// 自キャラとレールカメラの親子関係を結ぶ
 	player_->SetParent(&railCamera_->GetWorldTransform());
 
 	// レティクルのテクスチャ
 	TextureManager::Load("point.png");
+
+	// UI
+	cheeseTex = TextureManager::Load("player.PNG");
+	cheeseSprite_ = Sprite::Create(cheeseTex, {10, 10});
+
+	lifeTex_1 = TextureManager::Load("life.png");
+	lifeSprite_1 = Sprite::Create(lifeTex_1, {10, 80});
+	lifeTex_2 = TextureManager::Load("life.png");
+	lifeSprite_2 = Sprite::Create(lifeTex_2, {80, 80});
+	lifeTex_3 = TextureManager::Load("life.png");
+	lifeSprite_3 = Sprite::Create(lifeTex_3, {150, 80});
+	lifeTex_4 = TextureManager::Load("life.png");
+	lifeSprite_4 = Sprite::Create(lifeTex_4, {220, 80});
+	lifeTex_5 = TextureManager::Load("life.png");
+	lifeSprite_5 = Sprite::Create(lifeTex_5, {290, 80});
 }
 
 void GameScene::Update() {
@@ -96,6 +119,10 @@ void GameScene::Update() {
 
 	if (player_->isDead()) {
 		finished_ = true;
+	}
+
+	if (railCamera_->isGoal()) {
+		clear_ = true;
 	}
 
 	// 敵の更新
@@ -230,6 +257,33 @@ void GameScene::Draw() {
 	Sprite::PreDraw(commandList);
 
 	player_->DrawUI();
+	cheeseSprite_->Draw();
+
+	// ライフが1だったら
+	if (player_->isLife() >= 1) {
+		lifeSprite_1->Draw();
+
+		// ライフが2だったら
+		if (player_->isLife() >= 2) {
+			lifeSprite_2->Draw();
+
+			// ライフが3だったら
+			if (player_->isLife() >= 3) {
+				lifeSprite_3->Draw();
+
+				// ライフが4だったら
+				if (player_->isLife() >= 4) {
+					lifeSprite_4->Draw();
+
+					// ライフが5だったら
+					if (player_->isLife() >= 5) {
+						lifeSprite_5->Draw();
+					}
+				}
+			}
+		}
+	}
+	
 
 	/// <summary>
 	/// ここに前景スプライトの描画処理を追加できる
@@ -269,6 +323,18 @@ void GameScene::CheckAllColisions() {
 
 	}
 	#pragma endregion;
+
+	#pragma region
+	// 自キャラと障害物の当たり判定
+	for (Obstacle* obstacle : obstacle_) {
+		posB = obstacle->GetWorldPosition();
+		if ((((posB.x - posA.x) * (posB.x - posA.x)) + ((posB.y - posA.y) * (posB.y - posA.y)) + ((posB.z - posA.z) * (posB.z - posA.z))) <=
+		    ((playerRadius_ + obstacle->radius_) * (playerRadius_ + obstacle->radius_))) {
+			player_->OnColision();
+			obstacle->isDai(false);
+		}
+	}
+#pragma endregion;
 
 	#pragma region
 	// 自弾と敵キャラの当たり判定

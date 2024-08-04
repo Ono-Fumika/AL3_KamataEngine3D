@@ -154,4 +154,19 @@ private:
 
 	// 弾
 	std::list<EnemyBullet*> enemyBullets_;
+
+	// UI
+	uint32_t cheeseTex = 0;
+	Sprite* cheeseSprite_ = nullptr;
+
+	uint32_t lifeTex_1 = 0;
+	Sprite* lifeSprite_1 = nullptr;
+	uint32_t lifeTex_2 = 0;
+	Sprite* lifeSprite_2 = nullptr;
+	uint32_t lifeTex_3 = 0;
+	Sprite* lifeSprite_3 = nullptr;
+	uint32_t lifeTex_4 = 0;
+	Sprite* lifeSprite_4 = nullptr;
+	uint32_t lifeTex_5 = 0;
+	Sprite* lifeSprite_5 = nullptr;
 };
