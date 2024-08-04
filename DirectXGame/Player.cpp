@@ -30,11 +30,12 @@ Player::~Player(){
 	delete sprite2DReticle_;
 };
 
-void Player::Intialize(Model* model, uint32_t textureHandle,Vector3 playerPosition) { 
+void Player::Intialize(Model* model, uint32_t textureHandle, Vector3 playerPosition, Model* model2) { 
 	// NULLポインタチェック
 	assert(model);
 	// 引数として受け取ったデータをメンバ変数に記録する
 	model_ = model;
+	bulletModel_ = model2;
 	textureHandle_ = textureHandle;
 	// ワールド変換の初期化
 	worldTransform_.Initialize();
@@ -255,7 +256,7 @@ void Player::Attack() {
 
 			// 弾の生成し、初期化
 			PlayerBullet* newBullet = new PlayerBullet();
-			newBullet->Initialize(model_, GetWorldPosition(), velocity);
+			newBullet->Initialize(bulletModel_, GetWorldPosition(), velocity);
 
 			// 弾を登録する
 			bullets_.push_back(newBullet);

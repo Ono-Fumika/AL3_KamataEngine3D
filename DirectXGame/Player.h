@@ -22,7 +22,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="textureHandle">テクスチャハンドル</param>
-	void Intialize(Model* model, uint32_t textureHandle, Vector3 playerPosition);
+	void Intialize(Model* model, uint32_t textureHandle, Vector3 playerPosition, Model* model2);
 
 	/// <summary>
 	/// 更新
@@ -71,6 +71,7 @@ private:
 	WorldTransform worldTransform_;
 	// モデル
 	Model* model_ = nullptr;
+	Model* bulletModel_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 	// キーボード入力

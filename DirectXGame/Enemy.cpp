@@ -10,10 +10,11 @@ Enemy::~Enemy() {
 	
 }
 
-void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity) {
+void Enemy::Initialize(Model* model, const Vector3& position, const Vector3& velocity, Model* model2) {
 	// NULLポインタチェック
 	assert(model);
 	model_ = model;
+	bulletModel_ = model2;
 
 	// テクスチャ読み込み
 	textureHandle_ = TextureManager::Load("white1x1.png");
@@ -90,7 +91,7 @@ void Enemy::Fire() {
 	// 弾を生成し、初期化
 	if (isAtack_) {
 		EnemyBullet* newBullet = new EnemyBullet();
-		newBullet->Initialize(model_, worldTransform_.translation_, difference);
+		newBullet->Initialize(bulletModel_, worldTransform_.translation_, difference);
 		// 弾を登録する
 		gameScene_->AddEnemyBullet(newBullet);
 	}
@@ -98,7 +99,7 @@ void Enemy::Fire() {
 
 void Enemy::ApproachInitialize() {
 	// 発射タイマーを初期化
-	fireTimer = 60;
+	fireTimer = 120;
 }
 
 void Enemy::ApproachUpdate() { 

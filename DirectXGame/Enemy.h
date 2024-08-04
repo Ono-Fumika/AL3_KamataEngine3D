@@ -24,7 +24,7 @@ public:
 	/// </summary>
 	/// <param name="model">モデル</param>
 	/// <param name="position">初期座標</param>
-	void Initialize(Model* model, const Vector3& position, const Vector3& velocity);
+	void Initialize(Model* model, const Vector3& position, const Vector3& velocity, Model* model2);
 
 	/// <summary>
 	/// 更新
@@ -55,7 +55,7 @@ public:
 	void ApproachUpdate();
 
 	// 発射間隔
-	static const int kFireInterval = 60;
+	static const int kFireInterval = 120;
 
 	void SetPlayer(Player* player) { player_ = player; }
 
@@ -74,6 +74,7 @@ private:
 	WorldTransform worldTransform_;
 	// モデル
 	Model* model_ = nullptr;
+	Model* bulletModel_ = nullptr;
 	// テクスチャハンドル
 	uint32_t textureHandle_ = 0u;
 	// 速度

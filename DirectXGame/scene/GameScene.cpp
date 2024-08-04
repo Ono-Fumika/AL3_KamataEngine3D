@@ -50,7 +50,7 @@ void GameScene::Initialize() {
 	playerModel_ = Model::CreateFromOBJ("Player", true);
 	// 自キャラの初期化
 	Vector3 playerPosition(0, 0, 15.0f);
-	player_->Intialize(playerModel_, textureHankdle_, playerPosition);
+	player_->Intialize(playerModel_, textureHankdle_, playerPosition,model_);
 
 	// 敵の生成
 	//enemy_ = new Enemy;
@@ -419,7 +419,7 @@ void GameScene::UpdateEnemyPopCommands() {
 
 void GameScene::EnemyOccurrence(Vector3 positipn) {
 	Enemy* newEnemy = new Enemy();
-	newEnemy->Initialize(enemyModel_, positipn, velocity_);
+	newEnemy->Initialize(enemyModel_, positipn, velocity_, model_);
 	enemys_.push_back(newEnemy);
 	// 敵キャラにデーむシーンを渡す
 		newEnemy->SetGameScene(this);
